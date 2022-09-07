@@ -1,6 +1,8 @@
 import { useState } from "react"
 
-const Blog = ({ blog, increaseLikes }) => {
+const Blog = ({ blog, increaseLikes, removeBlog, user }) => {
+  //console.log('blogista', blog.user);
+  //console.log('userista', user.username);
 
   const blogStyle = {
     paddingTop: 10,
@@ -20,14 +22,21 @@ const Blog = ({ blog, increaseLikes }) => {
     e.preventDefault()
 
     const modifBlog = {
-      user: blog.user.id,
-      likes: blog.likes+1,
+      likes: blog.likes + 1,
       author: blog.author,
       title: blog.title,
       url: blog.url
     }
-  
+
     increaseLikes(modifBlog, blog.id)
+  }
+
+  const handleRemove = (e) => {
+    e.preventDefault()
+    const answer = window.confirm(`Remove blog "${blog.title}" by ${blog.author}`)
+    if (answer) {
+      removeBlog(blog.id)
+    }
   }
 
   return (
@@ -40,9 +49,9 @@ const Blog = ({ blog, increaseLikes }) => {
         :
         <div>
           <div>
-          {blog.title}
-          <button onClick={toggleVisibility}>hide</button>
-        </div>
+            {blog.title}
+            <button onClick={toggleVisibility}>hide</button>
+          </div>
           <div>
             {blog.url}
           </div>
@@ -52,10 +61,17 @@ const Blog = ({ blog, increaseLikes }) => {
           <div>
             {blog.author}
           </div>
+          <div>
+            {blog.user.username === user.username ?
+              <button onClick={handleRemove}>remove blog</button>
+              :
+              ''
+            }
+          </div>
         </div>
       }
     </div>
-      )
+  )
 }
 
-      export default Blog
+export default Blog

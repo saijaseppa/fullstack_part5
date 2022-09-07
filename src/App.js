@@ -17,7 +17,8 @@ const App = () => {
 
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
+    blogService.getAll()
+    .then(blogs =>
       setBlogs(blogs)
     )
   }, [])
@@ -96,7 +97,10 @@ const App = () => {
       const blogResponse = await blogService.update(id, modifBlog)
 
       if (blogResponse) {
-        setBlogs(blogs.map(blog => blog.id !== blogResponse.id ? blog : blogResponse))
+        console.log('modif', modifBlog);
+        console.log('response', blogResponse);
+        
+        setBlogs(blogs.map(blog => blog.id === blogResponse.id ? blogResponse : blog))
       }
     }
     catch (err) {
@@ -107,6 +111,23 @@ const App = () => {
         setErrorMessage(null)
       }, 5000)
     }
+  }
+
+  const removeBlog = async (id) => {
+    try {
+      await blogService.remove(id)
+      setBlogs(blogs.filter(blog => blog.id !== id))
+
+    }
+    catch (err) {
+      console.log('something wrong with removing blog!', err);
+
+      setErrorMessage('Something wrong with removing blog!')
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+    }
+    
   }
 
   if (user === null) {
@@ -121,7 +142,6 @@ const App = () => {
   return (
     <div>
       <h2>Blogs</h2>
-      <ErrorNotification errorMessage={errorMessage} />
       <Notification message={message} />
       <ErrorNotification errorMessage={errorMessage} />
 
@@ -130,8 +150,13 @@ const App = () => {
         <NewBlogForm createBlog={createBlog} />
       </Togglable>
 
-      {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} increaseLikes={increaseLikes}/>
+      {blogs.sort((a, b) => a.likes - b.likes).map(blog =>
+        <Blog 
+          key={blog.id} 
+          blog={blog} 
+          increaseLikes={increaseLikes}
+          removeBlog={removeBlog}
+          user={user}/>
       )}
     </div>
   )
