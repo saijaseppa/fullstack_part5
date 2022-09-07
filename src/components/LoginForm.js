@@ -1,16 +1,20 @@
+import { useState } from "react"
 
-/*const LoginForm = () => {
+const LoginForm = ({ login }) => {
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+
   return (
 
     <div>
       <h2>Log in to application</h2>
-      <form onSubmit={logIn}>
+      <form onSubmit={(e) => login(e, username, password)}>
         <div>
           username:
           <input
             type="text"
-            value={userName}
-            onChange={({ target }) => setUserName(target.value)} />
+            value={username}
+            onChange={({ target }) => setUsername(target.value)} />
         </div>
         <div>
           password:
@@ -27,4 +31,4 @@
   )
 }
 
-export default LoginForm*/
+export default LoginForm

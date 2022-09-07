@@ -1,19 +1,19 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import Notification from './components/Notification'
 import NewBlogForm from './components/NewBlogForm'
 import ErrorNotification from './components/ErrorNotification'
+import LoginForm from './components/LoginForm'
+import Togglable from './components/Togglable'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
   const [message, setMessage] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
-
+  const blogFormRef = useRef()
 
 
   useEffect(() => {
@@ -31,7 +31,7 @@ const App = () => {
     }
   }, [])
 
-  const logIn = async (e) => {
+  const logIn = async (e, username, password) => {
     e.preventDefault()
     console.log('LogIn clicked');
 
@@ -46,8 +46,6 @@ const App = () => {
 
       blogService.setToken(userInfo.token)
       setUser(userInfo)
-      setUsername('')
-      setPassword('')
     }
     catch (exception) {
       console.log('wrong credentials!!');
@@ -62,28 +60,22 @@ const App = () => {
   const logout = (e) => {
     e.preventDefault()
     console.log('log out clicked');
-    window.localStorage.clear()
     setUser(null)
+    window.localStorage.clear()
   }
 
-  const createBlog = async (e, title, author, url) => {
-    e.preventDefault()
+  const createBlog = async (newBlog) => {
     console.log('create blog clicked');
     try {
-      const newBlog = {
-        title: title,
-        author: author,
-        url: url
-      }
-
       const blog = await blogService.create(newBlog)
       console.log('new blog', blog);
-      
 
       if (blog) {
+        blogFormRef.current.toggleVisibility()
         const newBlogs = [...blogs, blog]
         setBlogs(newBlogs)
-        setMessage(`A new blog "${title}" added by ${user.name}`)
+        setMessage(`A new blog "${blog.title}" added by ${user.name}`)
+
         setTimeout(() => {
           setMessage(null)
         }, 5000)
@@ -99,47 +91,47 @@ const App = () => {
     }
   }
 
+  const increaseLikes = async (modifBlog, id) => {
+    try {
+      const blogResponse = await blogService.update(id, modifBlog)
+
+      if (blogResponse) {
+        setBlogs(blogs.map(blog => blog.id !== blogResponse.id ? blog : blogResponse))
+      }
+    }
+    catch (err) {
+      console.log('something wrong with adding likes!', err);
+
+      setErrorMessage('Something wrong with adding likes!')
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+    }
+  }
 
   if (user === null) {
     return (
       <div>
         <ErrorNotification errorMessage={errorMessage} />
-        <h2>Log in to application</h2>
-        <form onSubmit={logIn}>
-          <div>
-            username
-            <input
-              type="text"
-              value={username}
-              onChange={({ target }) => setUsername(target.value)} />
-          </div>
-          <div>
-            password
-            <input
-              type="password"
-              value={password}
-              onChange={({ target }) => setPassword(target.value)} />
-          </div>
-          <div>
-            <button type="submit">login</button>
-          </div>
-        </form>
+        <LoginForm login={logIn} />
       </div>
     )
   }
 
   return (
     <div>
-      <h2>blogs</h2>
+      <h2>Blogs</h2>
+      <ErrorNotification errorMessage={errorMessage} />
       <Notification message={message} />
       <ErrorNotification errorMessage={errorMessage} />
 
       <p>{user.name} logged in <button onClick={(e) => logout(e)}>Log out</button></p>
-
-      <NewBlogForm createBlog={createBlog} />
+      <Togglable buttonLabel="new blog" ref={blogFormRef}>
+        <NewBlogForm createBlog={createBlog} />
+      </Togglable>
 
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} increaseLikes={increaseLikes}/>
       )}
     </div>
   )

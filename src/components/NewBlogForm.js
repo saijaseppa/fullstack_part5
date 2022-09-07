@@ -6,8 +6,21 @@ const NewBlogForm = ({ createBlog }) => {
   const [author, setAuthor ] = useState('')
   const [url, setUrl ] = useState('')
 
+  const createNew = (e, title, author, url) => {
+    e.preventDefault()
+    const newBlog = {
+      title: title,
+      author: author,
+      url: url
+    }
+    createBlog(newBlog)
+    setTitle('')
+    setAuthor('')
+    setUrl('')
+  }
+
   return (
-    <form onSubmit={(e) => createBlog(e, title, author, url)}>
+    <form onSubmit={(e) => createNew(e, title, author, url)}>
       <div>
         title: 
         <input 
