@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState } from 'react'
 
 const Blog = ({ blog, increaseLikes, removeBlog, user }) => {
   //console.log('blogista', blog.user);
@@ -22,6 +22,8 @@ const Blog = ({ blog, increaseLikes, removeBlog, user }) => {
     e.preventDefault()
 
     const modifBlog = {
+      id: blog.id,
+      user: blog.user,
       likes: blog.likes + 1,
       author: blog.author,
       title: blog.title,

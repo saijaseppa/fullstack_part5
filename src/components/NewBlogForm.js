@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from 'react'
 
 const NewBlogForm = ({ createBlog }) => {
 
@@ -22,21 +22,21 @@ const NewBlogForm = ({ createBlog }) => {
   return (
     <form onSubmit={(e) => createNew(e, title, author, url)}>
       <div>
-        title: 
-        <input 
+        title:
+        <input
           type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}/>
       </div>
       <div>
-        author: 
+        author:
         <input
           type="text"
           value={author}
           onChange={(e) => setAuthor(e.target.value)} />
       </div>
       <div>
-        url: 
+        url:
         <input
           type="text"
           value={url}

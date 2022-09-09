@@ -11,16 +11,16 @@ import Togglable from './components/Togglable'
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
-  const [message, setMessage] = useState(null);
-  const [errorMessage, setErrorMessage] = useState(null);
+  const [message, setMessage] = useState(null)
+  const [errorMessage, setErrorMessage] = useState(null)
   const blogFormRef = useRef()
 
 
   useEffect(() => {
     blogService.getAll()
-    .then(blogs =>
-      setBlogs(blogs)
-    )
+      .then(blogs =>
+        setBlogs(blogs)
+      )
   }, [])
 
   useEffect(() => {
@@ -34,7 +34,7 @@ const App = () => {
 
   const logIn = async (e, username, password) => {
     e.preventDefault()
-    console.log('LogIn clicked');
+    console.log('LogIn clicked')
 
     try {
       const userInfo = await loginService.login({
@@ -49,7 +49,7 @@ const App = () => {
       setUser(userInfo)
     }
     catch (exception) {
-      console.log('wrong credentials!!');
+      console.log('wrong credentials!!')
 
       setErrorMessage('Wrong credentials!')
       setTimeout(() => {
@@ -60,16 +60,16 @@ const App = () => {
 
   const logout = (e) => {
     e.preventDefault()
-    console.log('log out clicked');
+    console.log('log out clicked')
     setUser(null)
     window.localStorage.clear()
   }
 
   const createBlog = async (newBlog) => {
-    console.log('create blog clicked');
+    console.log('create blog clicked')
     try {
       const blog = await blogService.create(newBlog)
-      console.log('new blog', blog);
+      console.log('new blog', blog)
 
       if (blog) {
         blogFormRef.current.toggleVisibility()
@@ -83,7 +83,7 @@ const App = () => {
       }
     }
     catch (er) {
-      console.log('something wrong with creating a new blog!');
+      console.log('something wrong with creating a new blog!')
 
       setErrorMessage('Something wrong with creating a new blog!')
       setTimeout(() => {
@@ -97,14 +97,14 @@ const App = () => {
       const blogResponse = await blogService.update(id, modifBlog)
 
       if (blogResponse) {
-        console.log('modif', modifBlog);
-        console.log('response', blogResponse);
-        
-        setBlogs(blogs.map(blog => blog.id === blogResponse.id ? blogResponse : blog))
+        console.log('modif', modifBlog)
+        console.log('response', blogResponse)
+
+        setBlogs(blogs.map(blog => blog.id === blogResponse.id ? modifBlog : blog))
       }
     }
     catch (err) {
-      console.log('something wrong with adding likes!', err);
+      console.log('something wrong with adding likes!', err)
 
       setErrorMessage('Something wrong with adding likes!')
       setTimeout(() => {
@@ -120,14 +120,14 @@ const App = () => {
 
     }
     catch (err) {
-      console.log('something wrong with removing blog!', err);
+      console.log('something wrong with removing blog!', err)
 
       setErrorMessage('Something wrong with removing blog!')
       setTimeout(() => {
         setErrorMessage(null)
       }, 5000)
     }
-    
+
   }
 
   if (user === null) {
@@ -151,9 +151,9 @@ const App = () => {
       </Togglable>
 
       {blogs.sort((a, b) => a.likes - b.likes).map(blog =>
-        <Blog 
-          key={blog.id} 
-          blog={blog} 
+        <Blog
+          key={blog.id}
+          blog={blog}
           increaseLikes={increaseLikes}
           removeBlog={removeBlog}
           user={user}/>
