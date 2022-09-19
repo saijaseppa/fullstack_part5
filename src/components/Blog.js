@@ -42,16 +42,16 @@ const Blog = ({ blog, increaseLikes, removeBlog, user }) => {
   }
 
   return (
-    <div style={blogStyle}>
+    <div style={blogStyle} className='blog-whole'>
       {!viewState ?
-        <div>
-          {blog.title}
+        <div className='blog'>
+          {blog.title} {blog.author}
           <button onClick={toggleVisibility}>view</button>
         </div>
         :
         <div>
           <div>
-            {blog.title}
+            {blog.title} {blog.author}
             <button onClick={toggleVisibility}>hide</button>
           </div>
           <div>
@@ -61,7 +61,7 @@ const Blog = ({ blog, increaseLikes, removeBlog, user }) => {
             likes {blog.likes} <button onClick={addLikes}>like</button>
           </div>
           <div>
-            {blog.author}
+            {blog.user.name}
           </div>
           <div>
             {blog.user.username === user.username ?

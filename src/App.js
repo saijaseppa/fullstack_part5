@@ -140,8 +140,8 @@ const App = () => {
   }
 
   return (
-    <div>
-      <h2>Blogs</h2>
+    <div className='bloglist' id='bloglist'>
+      <h2 >Blogs</h2>
       <Notification message={message} />
       <ErrorNotification errorMessage={errorMessage} />
 
@@ -152,6 +152,7 @@ const App = () => {
 
       {blogs.sort((a, b) => a.likes - b.likes).map(blog =>
         <Blog
+          id='oneblog'
           key={blog.id}
           blog={blog}
           increaseLikes={increaseLikes}
